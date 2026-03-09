@@ -115,7 +115,6 @@ import org.telegram.ui.Cells.PhotoAttachCameraCell;
 import org.telegram.ui.Cells.PhotoAttachPermissionCell;
 import org.telegram.ui.Cells.PhotoAttachPhotoCell;
 import org.telegram.ui.ChatActivity;
-import org.telegram.ui.Components.blur3.ViewGroupPartRenderer;
 import org.telegram.ui.Components.blur3.capture.IBlur3Capture;
 import org.telegram.ui.Components.blur3.capture.IBlur3Hash;
 import org.telegram.ui.LaunchActivity;
@@ -1070,7 +1069,7 @@ public class ChatAttachAlertPhotoLayout extends ChatAttachAlert.AttachAlertLayou
                         PhotoViewer.getInstance().closePhotoAfterSelectWithAnimation = parentAlert.avatarWithBulletin != null;
                     }
                     if (parentAlert.isStickerMode) {
-                        PhotoViewer.getInstance().enableStickerMode(null, false, parentAlert.customStickerHandler);
+                        PhotoViewer.getInstance().enableStickerMode(null, null, false, parentAlert.customStickerHandler);
                     }
                     if (captionForAllMedia()) {
                         PhotoViewer.getInstance().setCaption(parentAlert.getCommentView().getText());
@@ -1129,13 +1128,8 @@ public class ChatAttachAlertPhotoLayout extends ChatAttachAlert.AttachAlertLayou
         });
         gridView.addOnItemTouchListener(itemRangeSelector);
 
-        iBlur3Capture = new ViewGroupPartRenderer(gridView, alert.getContainerView(), gridView::drawChild) {
-            @Override
-            public void capture(Canvas canvas, RectF position) {
-                super.capture(canvas, position);
-                // cameraViewItemDecoration.onDraw(canvas, gridView, null);
-            }
-        };
+        iBlur3Capture = gridView;
+        iBlur3CaptureView = gridView;
         occupyNavigationBar = true;
 
         progressView = new EmptyTextProgressView(context, null, resourcesProvider);
@@ -2293,7 +2287,7 @@ public class ChatAttachAlertPhotoLayout extends ChatAttachAlert.AttachAlertLayou
         }, chatActivity);
         PhotoViewer.getInstance().setAvatarFor(parentAlert.getAvatarFor());
         if (parentAlert.isStickerMode) {
-            PhotoViewer.getInstance().enableStickerMode(null, false, parentAlert.customStickerHandler);
+            PhotoViewer.getInstance().enableStickerMode(null, null, false, parentAlert.customStickerHandler);
             PhotoViewer.getInstance().prepareSegmentImage();
         }
     }
