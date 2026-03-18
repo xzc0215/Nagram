@@ -405,7 +405,10 @@ public class ChatActivity extends BaseFragment implements
     private final static int nkheaderbtn_share_key = 2006;
     private final static int nkheaderbtn_upgrade = 2007;
 
+    private final static int nkheaderbtn_to_the_beginning = 2033;
+    private final static int nkheaderbtn_to_the_message = 2034;
     private final static int nkheaderbtn_hide_title = 2029;
+    private final static int nkheaderbtn_reload_messages = 2035;
 
     // shared with actionbar
     private final static int nkbtn_translate = 2008;
@@ -511,6 +514,7 @@ public class ChatActivity extends BaseFragment implements
     private ActionBarMenuItem.Item toTheBeginning;
     private ActionBarMenuItem.Item toTheMessage;
     private ActionBarMenuItem.Item hideTitleItem;
+    private ActionBarMenuItem.Item reloadMessagesItem;
     private ClippingImageView animatingImageView;
     private ThanosEffect chatListThanosEffect;
     private ChatListViewPaddingsAnimator chatListViewPaddingsAnimator;
@@ -1708,8 +1712,6 @@ public class ChatActivity extends BaseFragment implements
     private final static int chat_menu_topic_create = 73;
 
     private final static int id_chat_compose_panel = 1000;
-    private final static int to_the_beginning = 200;
-    private final static int to_the_message = 201;
 
     RecyclerListView.OnItemLongClickListenerExtended onItemLongClickListener = new RecyclerListView.OnItemLongClickListenerExtended() {
         @Override
@@ -4195,10 +4197,6 @@ public class ChatActivity extends BaseFragment implements
                     } catch (Exception e) {
                         FileLog.e(e);
                     }
-                } else if (id == to_the_beginning) {
-                    scrollToMessageId(1, 0, false, 0, true, 0);
-                } else if (id == to_the_message){
-                    setScrollToMessage();
                 } else if (id == boost_group) {
                     if (ChatObject.hasAdminRights(currentChat)) {
                         BoostsActivity boostsActivity = new BoostsActivity(dialog_id);
@@ -4754,9 +4752,10 @@ public class ChatActivity extends BaseFragment implements
             }
             boolean addedSettings = false;
             if (!isTopic) {
-                toTheBeginning = headerItem.lazilyAddSubItem(to_the_beginning, R.drawable.ic_upward, LocaleController.getString("ToTheBeginning", R.string.ToTheBeginning));
-                toTheMessage = headerItem.lazilyAddSubItem(to_the_message, R.drawable.msg_go_up, LocaleController.getString("ToTheMessage", R.string.ToTheMessage));
-                hideTitleItem = headerItem.lazilyAddSubItem(nkheaderbtn_hide_title, R.drawable.hide_title, LocaleController.getString("HideTitle", R.string.HideTitle));
+                toTheBeginning = headerItem.lazilyAddSubItem(nkheaderbtn_to_the_beginning, R.drawable.ic_upward, LocaleController.getString(R.string.ToTheBeginning));
+                toTheMessage = headerItem.lazilyAddSubItem(nkheaderbtn_to_the_message, R.drawable.msg_go_up, LocaleController.getString(R.string.ToTheMessage));
+                hideTitleItem = headerItem.lazilyAddSubItem(nkheaderbtn_hide_title, R.drawable.hide_title, LocaleController.getString(R.string.HideTitle));
+                reloadMessagesItem = headerItem.lazilyAddSubItem(nkheaderbtn_reload_messages, R.drawable.menu_browser_refresh, LocaleController.getString(R.string.ClearCache));
                 if (ChatObject.isMegagroup(currentChat) || currentChat != null && !ChatObject.isChannel(currentChat)) {
                     headerItem.lazilyAddSubItem(nkheaderbtn_zibi, R.drawable.msg_delete, LocaleController.getString("DeleteAllFromSelf", R.string.DeleteAllFromSelf));
                 }
@@ -43779,6 +43778,13 @@ public class ChatActivity extends BaseFragment implements
             } catch (Exception e) {
                 AlertUtil.showToast(e);
             }
+        } else if (id == nkheaderbtn_to_the_beginning) {
+            scrollToMessageId(1, 0, false, 0, true, 0);
+        } else if (id == nkheaderbtn_to_the_message) {
+            setScrollToMessage();
+        } else if (id == nkheaderbtn_reload_messages) {
+            getMessagesStorage().deleteDialog(dialog_id, 2);
+            presentFragment(ChatActivity.of(dialog_id), true);
         }
     }
 
